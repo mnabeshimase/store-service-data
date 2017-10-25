@@ -1,40 +1,15 @@
 const rp = require('request-promise');
 const faker = require('faker');
+const CATEGORIES = require('./initializeData.js').categories;
+let USERS_TOTAL = require('./initializeData.js').usersTotal;
+let PRODUCTS_TOTAL = require('./initializeData.js').productsTotal;
 
-const DLPORT = 3000;
-let USERS_TOTAL = 0;
-let PRODUCTS_TOTAL = 0;
-
-const CATEGORIES = [
-  'Automotive & Powersports',
-  'Beauty',
-  'Clothing & Accessories',
-  'Collectible Books',
-  'Collectible Coins',
-  'Entertainment Collectibles',
-  'Fine Art',
-  'Gift Cards',
-  'Grocery & Gourmet Foods',
-  'Health & Personal Care',
-  'Independent Design',
-  'Jewelry',
-  'Luggage & Travel Accessories',
-  'Major Appliances',
-  'Services',
-  'Sexual Wellness',
-  'Shoes',
-  'Handbags & Sunglasses',
-  'Sports Collectibles',
-  'Textbook Rentals',
-  'Video, DVD, & Blu-ray',
-  'Watches',
-  'Wine',
-];
+const DATASTORE_PORT = 3000;
 
 const mouseovers = () => {
   const jar = rp.jar();
   const cookieValue = Array(32).fill(0).map(() => faker.random.alphaNumeric()).join('');
-  jar.setCookie(rp.cookie(`dummyCookie=${cookieValue}`), `http://localhost:${DLPORT}`);
+  jar.setCookie(rp.cookie(`dummyCookie=${cookieValue}`), `http://localhost:${DATASTORE_PORT}`);
   const allMouseovers = {};
   const mouseoversLength = Math.floor(Math.random() * 5);
   for (let i = 0; i < mouseoversLength; i += 1) {
@@ -42,7 +17,7 @@ const mouseovers = () => {
   }
   return rp({
     method: 'POST',
-    url: `http://127.0.0.1:${DLPORT}/mouseovers`,
+    url: `http://127.0.0.1:${DATASTORE_PORT}/mouseovers`,
     json: allMouseovers,
     jar,
   });
@@ -51,10 +26,10 @@ const mouseovers = () => {
 const pageView = () => {
   const jar = rp.jar();
   const cookieValue = Array(32).fill(0).map(() => faker.random.alphaNumeric()).join('');
-  jar.setCookie(rp.cookie(`dummyCookie=${cookieValue}`), `http://localhost:${DLPORT}`);
+  jar.setCookie(rp.cookie(`dummyCookie=${cookieValue}`), `http://localhost:${DATASTORE_PORT}`);
   return rp({
     method: 'GET',
-    url: `http://127.0.0.1:${DLPORT}/${Math.floor(Math.random() * PRODUCTS_TOTAL) + 1}`,
+    url: `http://127.0.0.1:${DATASTORE_PORT}/${Math.floor(Math.random() * PRODUCTS_TOTAL) + 1}`,
     qs: {
       user_id: Math.floor(Math.random() * USERS_TOTAL) + 1,
     },
@@ -69,7 +44,7 @@ const signup = () => {
   USERS_TOTAL += 1;
   return rp({
     method: 'POST',
-    url: `http://127.0.0.1:${DLPORT}/signup`,
+    url: `http://127.0.0.1:${DATASTORE_PORT}/signup`,
     json: {
       age: Math.floor(Math.random() * 120),
       email: faker.internet.email(), // Currently there is no email varification
@@ -114,7 +89,7 @@ const purchase = () => {
   }
   return rp({
     method: 'POST',
-    url: `http://127.0.0.1:${DLPORT}/purchase`,
+    url: `http://127.0.0.1:${DATASTORE_PORT}/purchase`,
     json: {
       user_id: Math.floor(Math.random() * USERS_TOTAL) + 1,
       subtotal: subtotal / 100,
@@ -127,7 +102,7 @@ const addProduct = () => {
   PRODUCTS_TOTAL += 1;
   return rp({
     method: 'POST',
-    url: `http://127.0.0.1:${DLPORT}/products`,
+    url: `http://127.0.0.1:${DATASTORE_PORT}/products`,
     json: {
       name: faker.commerce.productName(),
       price: (Math.floor(Math.random() * 10000) + 1),
@@ -137,16 +112,8 @@ const addProduct = () => {
   });
 };
 
-const initialUsersAndProducts = [];
-for (let i = 0; i < 1000; i += 1) {
-  initialUsersAndProducts.push(signup());
-  initialUsersAndProducts.push(addProduct());
-}
-Promise.all(initialUsersAndProducts)
-  .then(() => {
-    setInterval(signup, 50);
-    setInterval(addProduct, 100);
-    setInterval(pageView, 10);
-    setInterval(mouseovers, 10);
-    setInterval(purchase, 10);
-  });
+setInterval(signup, 50);
+setInterval(addProduct, 100);
+setInterval(pageView, 10);
+setInterval(mouseovers, 10);
+setInterval(purchase, 10);
