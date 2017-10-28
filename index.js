@@ -112,8 +112,12 @@ const addProduct = () => {
   });
 };
 
-setInterval(signup, 50);
-setInterval(addProduct, 100);
-setInterval(pageView, 10);
-setInterval(mouseovers, 10);
-setInterval(purchase, 10);
+(async () => {
+  while (true) {
+    await signup();
+    await addProduct();
+    await pageView();
+    await mouseovers();
+    await purchase();
+  }
+})();
