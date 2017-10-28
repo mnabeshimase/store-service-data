@@ -27,9 +27,9 @@ const CATEGORIES = [
   'Watches',
   'Wine',
 ];
-const USERS_TOTAL = 10000000;
-const PRODUCTS_TOTAL = 10000000;
-const PRUCHASES_TOTAL = 1000000;
+const USERS_TOTAL = 1000;
+const PRODUCTS_TOTAL = 1000;
+const PRUCHASES_TOTAL = 1000;
 let connection;
 
 const insertUser = () => (
@@ -59,10 +59,11 @@ const insertProduct = () => (
   })
 );
 
-const insertReview = (userId, productId) => (
+const insertReview = (userId, productId, purchaseId) => (
   connection.query('INSERT INTO reviews SET ?', {
     user_id: userId,
     product_id: productId,
+    purchase_id: purchaseId,
     title: faker.lorem.sentence(),
     review: faker.lorem.paragraphs(),
     rating: Math.floor(Math.random() * 5) + 1,
@@ -117,9 +118,9 @@ const makePurchase = async () => {
     product.price /= 100;
   }
   const shoppingCartId = (await insertShoppingCart(userId, subtotal)).insertId;
-  await insertPurchase(userId, shoppingCartId);
+  const purchaseId = (await insertPurchase(userId, shoppingCartId)).insertId;
   for (let i = 0; i < numItems; i += 1) {
-    await insertReview(userId, products[i].id);
+    await insertReview(userId, products[i].id, purchaseId);
     await insertProductShoppingCart(products[i].id, shoppingCartId, products[i].quantity);
   }
 };
