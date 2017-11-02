@@ -27,6 +27,13 @@ const CATEGORIES = [
   'Watches',
   'Wine',
 ];
+const RECOMMENDATION_TYPES = [
+  'Content-based Filtering',
+  'Collaborative Filtering',
+  'Content-based Filtering, Collaborative Filtering',
+  'null',
+];
+
 const USERS_TOTAL = 1000;
 const PRODUCTS_TOTAL = 1000;
 const PRUCHASES_TOTAL = 1000;
@@ -82,6 +89,7 @@ const insertProductShoppingCart = (productId, shoppingCartId, quantity) => (
     product_id: productId,
     shopping_cart_id: shoppingCartId,
     quantity,
+    recommendation_type: RECOMMENDATION_TYPES[Math.floor(Math.random() * RECOMMENDATION_TYPES.length)],
   })
 );
 
@@ -143,6 +151,7 @@ initialize()
   .then(() => connection.end());
 
 module.exports.categories = CATEGORIES;
+module.exports.recommendationTypes = RECOMMENDATION_TYPES;
 module.exports.usersTotal = USERS_TOTAL;
 module.exports.productsTotal = PRODUCTS_TOTAL;
 module.exports.purchasesTotal = PRUCHASES_TOTAL;
