@@ -1,6 +1,7 @@
 const rp = require('request-promise');
 const faker = require('faker');
 const CATEGORIES = require('./initializeData.js').categories;
+const RECOMMENDATION_TYPES = require('./initializeData.js').recommendationTypes;
 let USERS_TOTAL = require('./initializeData.js').usersTotal;
 let PRODUCTS_TOTAL = require('./initializeData.js').productsTotal;
 
@@ -79,6 +80,8 @@ const purchase = () => {
       price: (Math.floor(Math.random() * 10000) + 1), // Inconsistency with products table
       quantity: Math.floor(Math.random() * 20) + 1,
       rating: Math.floor(Math.random() * 5) + 1,
+      recommendation_type:
+        RECOMMENDATION_TYPES[Math.floor(Math.random() * RECOMMENDATION_TYPES.length)],
       review_title: faker.lorem.sentence(),
       review_body: faker.lorem.paragraphs(),
       category: CATEGORIES[Math.floor(Math.random() * CATEGORIES.length)],
